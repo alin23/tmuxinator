@@ -15,7 +15,7 @@ cd <%= root || "." %>
 
   # Run pre command.
   <%= pre %>
-  
+
   # Run on_project_first_start command.
   <%= hook_on_project_first_start %>
 
@@ -87,13 +87,17 @@ cd <%= root || "." %>
 
 <%- if attach? -%>
   if [ -z "$TMUX" ]; then
-    <%= tmux %> -u attach-session -t <%= name %>
+    if [[ `uname` == 'Darwin' ]]; then
+      <%= tmux %> -CC -u attach-session -t <%= name %>
+    else
+      <%= tmux %> -u attach-session -t <%= name %>
+    fi
   else
     <%= tmux %> -u switch-client -t <%= name %>
   fi
 <%- end -%>
 
 <%= post %>
-    
+
 # Run on_project_exit command.
 <%= hook_on_project_exit %>
